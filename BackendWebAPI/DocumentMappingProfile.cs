@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using BackendWebAPI.Entities;
-using BackendWebAPI.Models;
+using BackendWebAPI.Models.AdmissionDocument;
+using BackendWebAPI.Models.Product;
+using BackendWebAPI.Models.Provider;
+using BackendWebAPI.Models.Storage;
 
 namespace BackendWebAPI
 {
@@ -23,6 +26,10 @@ namespace BackendWebAPI
                 .ForMember(p => p.Address,
                 c => c.MapFrom(dto => new Address()
                 {City = dto.City, ZipCode = dto.ZipCode, Street = dto.Street }));
+
+            CreateMap<Product, ProductDto>();
+
+            CreateMap<CreateProductDto, Product>();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BackendWebAPI.Entities;
-using BackendWebAPI.Models;
+using BackendWebAPI.Models.Storage;
+using BackendWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,34 +11,47 @@ namespace BackendWebAPI.Controllers
     [ApiController]
     public class StorageController : ControllerBase
     {
-        private readonly DocumentDbContext _documentDbContext;
-        private readonly IMapper _mapper;
+        private IStorageService _storageService;
 
-        public StorageController(DocumentDbContext documentDbContext ,IMapper mapper)
+        public StorageController(IStorageService storageService)
         {
-            _documentDbContext = documentDbContext;
-            _mapper = mapper;
+            _storageService = storageService;
+        }
+
+        [HttpPut]
+        public ActionResult Update([FromBody] UpdateStorageDto dto, [FromRoute]int id)
+        {
+            var isUpdated = _storageService.Update(id, dto);
+            if (!isUpdated) { return NotFound(); }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id) 
+        {
+            var isDeleted = _storageService.Delete(id);
+
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
         }
 
         [HttpPost]
         public ActionResult CreateStorage([FromBody] CreateStorageDto dto)
         {
-            var storage = _mapper.Map<Storage>(dto);
-            _documentDbContext.Storages.Add(storage);
-            _documentDbContext.SaveChanges();
+            int id = _storageService.CreateStorage(dto);
 
-            return Created($"api/storage/{storage.Id}", null);
+            return Created($"api/storage/{id}", null);
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<StorageDto>> GetAll()
         {
-            var storages = _documentDbContext
-                .Storages
-                .Include(d => d.Documents)
-                .ToList();
-
-            var storageDtos = _mapper.Map<List<StorageDto>>(storages);
+            var storageDtos = _storageService.GetAll();
 
             return Ok(storageDtos);
         }
@@ -45,17 +59,13 @@ namespace BackendWebAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<StorageDto> GetById([FromRoute] int id)
         {
-            var storage = _documentDbContext
-                .Storages
-                .Include(d => d.Documents)
-                .FirstOrDefault(s => s.Id == id);
+            var storageDto = _storageService.GetById(id);
 
-            if (storage is null)
+            if (storageDto is null)
             {
                 return NotFound();
             }
 
-            var storageDto = _mapper.Map<StorageDto>(storage);
             return Ok(storageDto);
         }
     }

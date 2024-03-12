@@ -1,6 +1,7 @@
 ﻿using BackendWebAPI.Entities;
+using BackendWebAPI.Models.AdmissionDocument;
 
-namespace BackendWebAPI.Models
+namespace BackendWebAPI.Models.Storage
 {
     public class StorageDto
     {

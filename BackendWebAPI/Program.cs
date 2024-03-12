@@ -1,4 +1,5 @@
 using BackendWebAPI.Entities;
+using BackendWebAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -15,6 +16,9 @@ namespace BackendWebAPI
             builder.Services.AddControllers();
             builder.Services.AddScoped<DataSeeder>();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddScoped<IStorageService, StorageService>();
+            builder.Services.AddScoped<IProviderService, ProviderService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
 
             builder.Services.AddDbContext<DocumentDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DocumentsDbContext"), builder =>

@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-using BackendWebAPI.Entities;
-using BackendWebAPI.Models;
+﻿using BackendWebAPI.Models.Provider;
+using BackendWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendWebAPI.Controllers
@@ -9,23 +8,62 @@ namespace BackendWebAPI.Controllers
     [ApiController]
     public class ProviderController : ControllerBase
     {
-        private readonly DocumentDbContext _documentDbContext;
-        private readonly IMapper _mapper;
+        private IProviderService _providerService;
 
-        public ProviderController(DocumentDbContext documentDbContext, IMapper mapper)
+        public ProviderController(IProviderService providerService)
         {
-            _documentDbContext = documentDbContext;
-            _mapper = mapper;
+            _providerService = providerService;
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            var isDeleted = _providerService.Delete(id);
+
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
+        [HttpPut]
+        public ActionResult Update([FromBody] UpdateProviderDto dto, [FromRoute] int id)
+        {
+            var isUpdated = _providerService.Update(id, dto);
+            if (!isUpdated) { return NotFound(); }
+
+            return Ok();
         }
 
         [HttpPost]
         public ActionResult CreateProvider([FromBody] CreateProviderDto dto)
         {
-            var provider = _mapper.Map<Provider>(dto);
-            _documentDbContext.Providers.Add(provider);
-            _documentDbContext.SaveChanges();
+            int id = _providerService.CreateProvider(dto);
 
-            return Created($"api/provider/{provider.Id}", null);
+            return Created($"api/provider/{id}", null);
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<ProviderDto>> GetAll()
+        {
+            var providerDtos = _providerService.GetAll();
+
+            return Ok(providerDtos);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<ProviderDto> GetById([FromRoute] int id)
+        {
+            var providerDto = _providerService.GetById(id);
+
+            if (providerDto is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(providerDto);
         }
     }
 }

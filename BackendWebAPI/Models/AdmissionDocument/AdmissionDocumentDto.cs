@@ -1,6 +1,6 @@
 ﻿using BackendWebAPI.Entities;
 
-namespace BackendWebAPI.Models
+namespace BackendWebAPI.Models.AdmissionDocument
 {
     public class AdmissionDocumentDto
     {

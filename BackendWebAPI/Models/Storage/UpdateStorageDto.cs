@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BackendWebAPI.Models
+namespace BackendWebAPI.Models.Storage
 {
-    public class CreateStorageDto
+    public class UpdateStorageDto
     {
         [Required]
-        [MaxLength(40)]
+        [MaxLength(40)] 
         public string Name { get; set; }
         public string Symbol { get; set; }
     }

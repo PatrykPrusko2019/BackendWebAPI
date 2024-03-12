@@ -1,11 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BackendWebAPI.Models
+﻿namespace BackendWebAPI.Models.Provider
 {
-    public class CreateProviderDto
+    public class UpdateProviderDto
     {
-        [Required]
-        [MaxLength(40)]
         public string CompanyName { get; set; }
 
         public string City { get; set; }

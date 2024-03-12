@@ -1,10 +1,11 @@
-﻿using BackendWebAPI.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BackendWebAPI.Models
+namespace BackendWebAPI.Models.Provider
 {
-    public class ProviderDto
+    public class CreateProviderDto
     {
-        public int Id { get; set; }
+        [Required]
+        [MaxLength(40)]
         public string CompanyName { get; set; }
 
         public string City { get; set; }
