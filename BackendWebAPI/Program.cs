@@ -1,5 +1,6 @@
 using BackendWebAPI.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace BackendWebAPI
 {
@@ -12,11 +13,14 @@ namespace BackendWebAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddScoped<DataSeeder>();
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+
             builder.Services.AddDbContext<DocumentDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DocumentsDbContext"), builder =>
             {
                 builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             }));
-            builder.Services.AddScoped<DataSeeder>();
 
 
             var app = builder.Build();
