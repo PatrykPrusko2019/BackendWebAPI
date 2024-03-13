@@ -19,6 +19,7 @@ namespace BackendWebAPI
             builder.Services.AddScoped<IStorageService, StorageService>();
             builder.Services.AddScoped<IProviderService, ProviderService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 
             builder.Services.AddDbContext<DocumentDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DocumentsDbContext"), builder =>

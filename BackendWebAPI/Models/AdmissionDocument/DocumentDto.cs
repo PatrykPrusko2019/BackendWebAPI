@@ -2,7 +2,7 @@
 
 namespace BackendWebAPI.Models.AdmissionDocument
 {
-    public class AdmissionDocumentDto
+    public class DocumentDto
     {
         public int Id { get; set; }
         public string TargetWarehouse { get; set; }

@@ -15,7 +15,7 @@ namespace BackendWebAPI
 
             CreateMap<CreateStorageDto, Storage>();
 
-            CreateMap<AdmissionDocument, AdmissionDocumentDto>();
+            CreateMap<AdmissionDocument, DocumentDto>();
 
             CreateMap<Provider, ProviderDto>()
                 .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City))

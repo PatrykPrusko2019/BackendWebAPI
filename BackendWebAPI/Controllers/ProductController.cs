@@ -16,7 +16,7 @@ namespace BackendWebAPI.Controllers
             _productService = productService;
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public ActionResult Update([FromBody] UpdateProductDto dto, [FromRoute] int id)
         {
             var isUpdated = _productService.Update(id, dto);

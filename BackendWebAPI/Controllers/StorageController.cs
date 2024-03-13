@@ -18,7 +18,7 @@ namespace BackendWebAPI.Controllers
             _storageService = storageService;
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public ActionResult Update([FromBody] UpdateStorageDto dto, [FromRoute]int id)
         {
             var isUpdated = _storageService.Update(id, dto);

@@ -9,7 +9,7 @@ namespace BackendWebAPI.Models.Storage
         public string Name { get; set; }
         public string Symbol { get; set; }
 
-        public List<AdmissionDocumentDto> Documents { get; set; }
+        public List<DocumentDto> Documents { get; set; }
 
     }
 }
