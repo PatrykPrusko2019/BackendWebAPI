@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BackendWebAPI.Entities;
 using BackendWebAPI.Models.AdmissionDocument;
+using BackendWebAPI.Models.Label;
 using BackendWebAPI.Models.Product;
 using BackendWebAPI.Models.Provider;
 using BackendWebAPI.Models.Storage;
@@ -16,6 +17,7 @@ namespace BackendWebAPI
             CreateMap<CreateStorageDto, Storage>();
 
             CreateMap<AdmissionDocument, DocumentDto>();
+            CreateMap<CreateDocumentDto, AdmissionDocument>();
 
             CreateMap<Provider, ProviderDto>()
                 .ForMember(m => m.City, c => c.MapFrom(s => s.Address.City))
@@ -30,6 +32,8 @@ namespace BackendWebAPI
             CreateMap<Product, ProductDto>();
 
             CreateMap<CreateProductDto, Product>();
+
+            CreateMap<Label, LabelDto>();
         }
     }
 }

@@ -42,6 +42,7 @@ namespace BackendWebAPI.Controllers
         public ActionResult CreateProduct([FromBody] CreateProductDto dto)
         {
             int id = _productService.CreateProduct(dto);
+            if (id == -1) return NotFound($"No found documentId -> {dto.AdmissionDocumentId}");
 
             return Created($"api/product/{id}", null);
         }

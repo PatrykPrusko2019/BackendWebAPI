@@ -25,6 +25,49 @@ namespace BackendWebAPI.Controllers
             return Ok();
         }
 
-        
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            var isDeleted = _documentService.Delete(id);
+
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public ActionResult CreateStorage([FromBody] CreateDocumentDto dto)
+        {
+            int id = _documentService.CreateDocument(dto);
+            if (id == -1) return NotFound("no found storage or provider");
+
+            return Created($"api/document/{id}", null);
+        }
+
+        [HttpGet]
+        public ActionResult<DocumentDto> GetAll()
+        {
+            var documentDtos = _documentService.GetAll();
+
+            return Ok(documentDtos);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<DocumentDto> GetById([FromRoute] int id)
+        {
+            var documentDto = _documentService.GetById(id);
+
+            if (documentDto is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(documentDto);
+        }
+
+
     }
 }

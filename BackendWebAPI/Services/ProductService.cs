@@ -27,6 +27,9 @@ namespace BackendWebAPI.Services
 
         public int CreateProduct(CreateProductDto dto)
         {
+            var document = _documentDbContext.Documents.FirstOrDefault(d => d.Id == dto.AdmissionDocumentId);
+            if (document == null) return -1;
+
             var product = _mapper.Map<Product>(dto);
             _documentDbContext.Products.Add(product);
             _documentDbContext.SaveChanges();
