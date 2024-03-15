@@ -29,6 +29,11 @@ namespace BackendWebAPI
                 c => c.MapFrom(dto => new Address()
                 {City = dto.City, ZipCode = dto.ZipCode, Street = dto.Street }));
 
+            CreateMap<ProviderDto, Provider>()
+                .ForMember(p => p.Address,
+                c => c.MapFrom(dto => new Address()
+                { City = dto.City, ZipCode = dto.ZipCode, Street = dto.Street }));
+
             CreateMap<Product, ProductDto>();
 
             CreateMap<CreateProductDto, Product>();

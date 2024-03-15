@@ -38,7 +38,7 @@ namespace BackendWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateProvider([FromBody] CreateProviderDto dto)
+        public ActionResult CreateProvider([FromBody] ProviderDto dto)
         {
             int id = _providerService.CreateProvider(dto);
 
