@@ -124,6 +124,7 @@ namespace BackendWebAPI.Services
                 .Documents
                 .Include(p => p.Products)
                 .Include(l => l.Labels)
+                .Where(d => d.ApprovedDocument == "WAIT" || d.ApprovedDocument == "APPROVED")
                 .ToList();
 
             var documentDtos = _mapper.Map<List<DocumentDto>>(documents);
@@ -159,7 +160,7 @@ namespace BackendWebAPI.Services
                 .Documents
                 .FirstOrDefault(s => s.Id == id);
 
-            if (document == null || ( dto.TargetWarehouse.Trim().IsNullOrEmpty() && dto.Vendor.Trim().IsNullOrEmpty() ) ) { return false; }
+            if (document == null || ( dto.TargetWarehouse.Trim().IsNullOrEmpty() && dto.Vendor.Trim().IsNullOrEmpty() && dto.ApprovedDocument.Trim().IsNullOrEmpty()) ) { return false; }
             
             bool differentStorage = !document.TargetWarehouse.ToLower().Equals(dto.TargetWarehouse.ToLower());
             var updateStorage = default(Entities.Storage);
@@ -191,7 +192,7 @@ namespace BackendWebAPI.Services
 
             }
 
-            if (updateStorage == null && updateProvider == null) return false;
+            if (updateStorage == null && updateProvider == null && dto.ApprovedDocument.IsNullOrEmpty()) return false;
 
             if (updateStorage != null)
             {
@@ -203,6 +204,13 @@ namespace BackendWebAPI.Services
             {
                 document.ProviderId = updateProvider.Id;
                 document.Vendor = updateProvider.CompanyName;
+            }
+
+            if (dto.ApprovedDocument == "APPROVED" || dto.ApprovedDocument == "CANCELLED" || dto.ApprovedDocument == "WAIT")
+            {
+                if (document.ApprovedDocument == "APPROVED") return false; // if the document is APPROVED, it cannot be changed
+
+                document.ApprovedDocument = dto.ApprovedDocument;
             }
 
             if (updateStorage != null) updateStorage.Documents.Add(document);
