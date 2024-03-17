@@ -29,7 +29,7 @@ namespace BackendWebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult Update([FromBody] UpdateProviderDto dto, [FromRoute] int id)
+        public ActionResult Update([FromBody] ProviderDto dto, [FromRoute] int id)
         {
             var isUpdated = _providerService.Update(id, dto);
             if (!isUpdated) { return NotFound(); }

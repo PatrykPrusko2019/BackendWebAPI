@@ -11,6 +11,8 @@ namespace BackendWebAPI.Models.AdmissionDocument
         public string Vendor { get; set; }
         public int ProviderId { get; set; }
         public int StorageId { get; set; }
+        public string ApprovedDocument { get; set; }
+        public string LabelNames { get; set; }
         public List<ProductDto> Products { get; set; }
 
         public List<LabelDto> Labels { get; set; }

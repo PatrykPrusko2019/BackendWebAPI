@@ -39,7 +39,7 @@ namespace BackendWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateStorage([FromBody] CreateDocumentDto dto)
+        public ActionResult CreateDocument([FromBody] CreateDocumentDto dto)
         {
             int id = _documentService.CreateDocument(dto);
             if (id == -1) return NotFound("no found storage or provider");

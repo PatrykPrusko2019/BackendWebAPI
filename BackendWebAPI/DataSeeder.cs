@@ -13,7 +13,7 @@ namespace BackendWebAPI
 
         public void Seed()
         {
-            if (_dbContext.Database.CanConnect())
+            if (!_dbContext.Database.CanConnect())
             {
                 if (!_dbContext.Providers.Any())
                 {
@@ -80,6 +80,8 @@ namespace BackendWebAPI
                     Vendor = "BTX_Company",
                     ProviderId = provider.Id,
                     StorageId = storage.Id,
+                    LabelNames = "",
+                    ApprovedDocument = "WAIT",
                     Products = new List<Product>()
                     {
                         new Product() 

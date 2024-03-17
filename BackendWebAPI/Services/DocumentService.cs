@@ -3,6 +3,7 @@ using BackendWebAPI.Entities;
 using BackendWebAPI.Models.AdmissionDocument;
 using BackendWebAPI.Models.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client.Extensions.Msal;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.Reflection.Metadata;
@@ -30,14 +31,67 @@ namespace BackendWebAPI.Services
 
         public int CreateDocument(CreateDocumentDto dto)
         {
-            var storage = _documentDbContext.Storages.FirstOrDefault(s => s.Name.ToLower().Equals(dto.TargetWarehouse.ToLower()));
-            if (storage == null) return -1;
-            var provider = _documentDbContext.Providers.FirstOrDefault(p => p.CompanyName.ToLower().Equals(dto.Vendor.ToLower()));
+            var provider = _documentDbContext.Providers.FirstOrDefault(p => p.Id == dto.ProviderId);
             if (provider == null) return -1;
 
+
+            if (dto.TargetWarehouse.Contains(';'))
+            {
+                string[] strings = dto.TargetWarehouse.Split(";");
+                if (strings.Length != 2) return -1;
+
+                //created new storage
+                var storage1 = new Entities.Storage();
+                storage1.Name = strings[0];
+                storage1.Symbol = strings[1];
+                _documentDbContext.Storages.Add(storage1);
+                _documentDbContext.SaveChanges();
+            }
+            else if (!dto.TargetWarehouse.IsNullOrEmpty())
+            {
+                var storage2 = _documentDbContext.Storages.FirstOrDefault(s => s.Name.ToLower().Equals(dto.TargetWarehouse.ToLower()));
+                if (storage2 == null)
+                {
+                    //created new storage
+                    storage2 = new Entities.Storage();
+                    storage2.Name = dto.TargetWarehouse;
+                    if (dto.TargetWarehouse.Length > 4) storage2.Symbol = dto.TargetWarehouse.Substring(dto.TargetWarehouse.Length - (dto.TargetWarehouse.Length / 2));
+                    else storage2.Symbol = "tooShort";
+                    _documentDbContext.Storages.Add(storage2);
+                    _documentDbContext.SaveChanges();
+                }
+            }
+
+            var storage = _documentDbContext.Storages.FirstOrDefault(s => s.Name.ToLower().Equals(dto.TargetWarehouse.ToLower()));
+            if (storage == null) return -1;
+
+
             var document = _mapper.Map<AdmissionDocument>(dto);
+            document.TargetWarehouse = dto.TargetWarehouse;
+            document.Vendor = provider.CompanyName;
             document.ProviderId = provider.Id;
             document.StorageId = storage.Id;
+            document.ApprovedDocument = "WAIT";
+            document.LabelNames = "";
+            document.Labels = new List<Label>();
+
+            //create new Labels
+            if (!dto.LabelNames.IsNullOrEmpty())
+            {
+                dto.LabelNames = dto.LabelNames.Trim();
+                if (dto.LabelNames.Contains(';'))
+                {
+                    string[] stringsLabels = dto.LabelNames.Split(';');
+                    for (int i = 0; i < stringsLabels.Length; i++) 
+                    {
+                        document.Labels.Add(new Label() { Name = stringsLabels[i] });
+                    }
+                }
+                else
+                {
+                    document.Labels.Add(new Label() { Name = dto.LabelNames });
+                }
+            }
 
             _documentDbContext.Documents.Add(document);
             _documentDbContext.SaveChanges();
@@ -108,7 +162,7 @@ namespace BackendWebAPI.Services
             if (document == null || ( dto.TargetWarehouse.Trim().IsNullOrEmpty() && dto.Vendor.Trim().IsNullOrEmpty() ) ) { return false; }
             
             bool differentStorage = !document.TargetWarehouse.ToLower().Equals(dto.TargetWarehouse.ToLower());
-            var updateStorage = default(Storage);
+            var updateStorage = default(Entities.Storage);
             if (differentStorage)
             {
                 updateStorage = _documentDbContext.Storages.FirstOrDefault(s => s.Name.ToLower().Equals(dto.TargetWarehouse.ToLower()));

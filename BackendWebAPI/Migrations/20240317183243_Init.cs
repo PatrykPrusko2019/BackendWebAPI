@@ -16,13 +16,29 @@ namespace BackendWebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Street = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItemsOfProduct",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameProduct = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CodeProduct = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ItemsOfProducts = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemsOfProduct", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,6 +97,8 @@ namespace BackendWebAPI.Migrations
                     TargetWarehouse = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Vendor = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProviderId = table.Column<int>(type: "int", nullable: false),
+                    ApprovedDocument = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LabelNames = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StorageId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -179,6 +197,9 @@ namespace BackendWebAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AdmissionDocumentLabel");
+
+            migrationBuilder.DropTable(
+                name: "ItemsOfProduct");
 
             migrationBuilder.DropTable(
                 name: "Products");

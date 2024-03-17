@@ -9,7 +9,7 @@ namespace BackendWebAPI.Services
 {
     public interface IProviderService
     {
-        bool Update(int id, UpdateProviderDto dto);
+        bool Update(int id, ProviderDto dto);
         int CreateProvider(ProviderDto dto);
         bool Delete(int id);
         List<ProviderDto> GetAll();
@@ -27,10 +27,11 @@ namespace BackendWebAPI.Services
             _mapper = mapper;
         }
 
-        public bool Update(int id, UpdateProviderDto dto)
+        public bool Update(int id, ProviderDto dto)
         {
             var provider = _documentDbContext
                 .Providers
+                .Include(a => a.Address)
                 .FirstOrDefault(s => s.Id == id);
 
             if (provider == null) { return false; }
