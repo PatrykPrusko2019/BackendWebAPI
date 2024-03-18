@@ -110,6 +110,9 @@ namespace BackendWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AdmissionDocumentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CodeProduct")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -125,6 +128,8 @@ namespace BackendWebAPI.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdmissionDocumentId");
 
                     b.ToTable("ItemsOfProduct");
                 });
@@ -260,6 +265,17 @@ namespace BackendWebAPI.Migrations
                     b.Navigation("Storage");
                 });
 
+            modelBuilder.Entity("BackendWebAPI.Entities.Item", b =>
+                {
+                    b.HasOne("BackendWebAPI.Entities.AdmissionDocument", "AdmissionDocument")
+                        .WithMany("Items")
+                        .HasForeignKey("AdmissionDocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdmissionDocument");
+                });
+
             modelBuilder.Entity("BackendWebAPI.Entities.Product", b =>
                 {
                     b.HasOne("BackendWebAPI.Entities.AdmissionDocument", "AdmissionDocument")
@@ -290,6 +306,8 @@ namespace BackendWebAPI.Migrations
 
             modelBuilder.Entity("BackendWebAPI.Entities.AdmissionDocument", b =>
                 {
+                    b.Navigation("Items");
+
                     b.Navigation("Products");
                 });
 

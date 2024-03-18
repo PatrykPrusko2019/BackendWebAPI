@@ -1,6 +1,6 @@
-﻿namespace BackendWebAPI.Entities
+﻿namespace BackendWebAPI.Models.Item
 {
-    public class Item
+    public class ItemDto
     {
         public int Id { get; set; }
         public string NameProduct { get; set; }
@@ -9,6 +9,5 @@
         public double Price { get; set; }
 
         public int AdmissionDocumentId { get; set; }
-        public virtual AdmissionDocument AdmissionDocument { get; set; }
     }
 }

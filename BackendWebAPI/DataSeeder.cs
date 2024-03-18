@@ -1,4 +1,6 @@
 ﻿using BackendWebAPI.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Xml.XPath;
 
 namespace BackendWebAPI
 {
@@ -11,10 +13,16 @@ namespace BackendWebAPI
             _dbContext = dbContext;
         }
 
-        public void Seed()
+        public async void Seed()
         {
-            if (!_dbContext.Database.CanConnect())
+            if (!await _dbContext.Database.CanConnectAsync())
             {
+                var pendingMigrations = _dbContext.Database.GetPendingMigrations();
+                if (pendingMigrations != null && pendingMigrations.Any())
+                {
+                    _dbContext.Database.Migrate();
+                }
+
                 if (!_dbContext.Providers.Any())
                 {
                     var providers = GetProviders();
@@ -72,6 +80,9 @@ namespace BackendWebAPI
             var provider = _dbContext.Providers.FirstOrDefault(p => p.CompanyName == "BTX_Company");
             var storage = _dbContext.Storages.FirstOrDefault(s => s.Name == "Cars");
 
+            if (provider == null) GetProviders();
+            if (storage == null) GetStorages();
+
             var documents = new List<AdmissionDocument>()
             {
                 new AdmissionDocument()
@@ -103,9 +114,28 @@ namespace BackendWebAPI
                     {
                         new Label() { Name = "First"},
                         new Label() { Name = "Second"},
+                    },
+                    Items = new List<Item>()
+                    {
+                        new Item(),
+                        new Item()
                     }
                 }
+
             };
+
+            var document = documents[0];
+
+            document.Items[0].NameProduct = document.Products[0].Name;
+            document.Items[0].CodeProduct = document.Products[0].Code;
+            document.Items[0].ItemsOfProducts = document.Products.Count(p => p.Name == document.Items[0].NameProduct && p.Code == document.Items[0].CodeProduct);
+            document.Items[0].Price = document.Products[0].Price;
+
+            document.Items[1].NameProduct = document.Products[1].Name;
+            document.Items[1].CodeProduct = document.Products[1].Code;
+            document.Items[1].ItemsOfProducts = document.Products.Count(p => p.Name == document.Items[1].NameProduct && p.Code == document.Items[1].CodeProduct);
+            document.Items[1].Price = document.Products[1].Price;
+
 
             return documents;
         }

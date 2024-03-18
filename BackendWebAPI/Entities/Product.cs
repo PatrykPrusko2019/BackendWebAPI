@@ -10,6 +10,5 @@
 
         public int AdmissionDocumentId { get; set; }
         public virtual AdmissionDocument AdmissionDocument { get; set; }
-
     }
 }

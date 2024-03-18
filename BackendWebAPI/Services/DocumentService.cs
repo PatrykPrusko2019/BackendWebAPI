@@ -74,6 +74,7 @@ namespace BackendWebAPI.Services
             document.ApprovedDocument = "WAIT";
             document.LabelNames = "";
             document.Labels = new List<Label>();
+            document.Items = new List<Item>();
 
             //create new Labels
             if (!dto.LabelNames.IsNullOrEmpty())
@@ -124,6 +125,7 @@ namespace BackendWebAPI.Services
                 .Documents
                 .Include(p => p.Products)
                 .Include(l => l.Labels)
+                .Include(i => i.Items)
                 .Where(d => d.ApprovedDocument == "WAIT" || d.ApprovedDocument == "APPROVED")
                 .ToList();
 
@@ -143,6 +145,7 @@ namespace BackendWebAPI.Services
                 .Documents
                 .Include(p => p.Products)
                 .Include(l => l.Labels)
+                .Include(i => i.Items)
                 .FirstOrDefault(s => s.Id == id);
 
             if (document is null)
@@ -159,6 +162,7 @@ namespace BackendWebAPI.Services
             var document = _documentDbContext
                 .Documents
                 .Include(l => l.Labels)
+                .Include(i => i.Items)
                 .FirstOrDefault(s => s.Id == id);
 
             if (document == null || ( dto.TargetWarehouse.Trim().IsNullOrEmpty() && dto.Vendor.Trim().IsNullOrEmpty() && dto.LabelNames.Trim().IsNullOrEmpty()) ) { return false; }

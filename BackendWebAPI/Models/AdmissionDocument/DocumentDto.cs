@@ -1,4 +1,5 @@
 ﻿using BackendWebAPI.Entities;
+using BackendWebAPI.Models.Item;
 using BackendWebAPI.Models.Label;
 using BackendWebAPI.Models.Product;
 
@@ -16,5 +17,6 @@ namespace BackendWebAPI.Models.AdmissionDocument
         public List<ProductDto> Products { get; set; }
 
         public List<LabelDto> Labels { get; set; }
+        public List<ItemDto> Items { get; set; }
     }
 }

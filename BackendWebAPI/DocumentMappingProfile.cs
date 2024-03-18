@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BackendWebAPI.Entities;
 using BackendWebAPI.Models.AdmissionDocument;
+using BackendWebAPI.Models.Item;
 using BackendWebAPI.Models.Label;
 using BackendWebAPI.Models.Product;
 using BackendWebAPI.Models.Provider;
@@ -39,6 +40,8 @@ namespace BackendWebAPI
             CreateMap<CreateProductDto, Product>();
 
             CreateMap<Label, LabelDto>();
+
+            CreateMap<Item, ItemDto>();
         }
     }
 }

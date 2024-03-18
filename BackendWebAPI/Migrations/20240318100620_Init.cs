@@ -26,22 +26,6 @@ namespace BackendWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItemsOfProduct",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NameProduct = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CodeProduct = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ItemsOfProducts = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ItemsOfProduct", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Labels",
                 columns: table => new
                 {
@@ -143,6 +127,29 @@ namespace BackendWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ItemsOfProduct",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameProduct = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CodeProduct = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ItemsOfProducts = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    AdmissionDocumentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemsOfProduct", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ItemsOfProduct_Documents_AdmissionDocumentId",
+                        column: x => x.AdmissionDocumentId,
+                        principalTable: "Documents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -179,6 +186,11 @@ namespace BackendWebAPI.Migrations
                 name: "IX_Documents_StorageId",
                 table: "Documents",
                 column: "StorageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemsOfProduct_AdmissionDocumentId",
+                table: "ItemsOfProduct",
+                column: "AdmissionDocumentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_AdmissionDocumentId",

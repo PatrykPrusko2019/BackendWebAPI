@@ -17,6 +17,7 @@
         public virtual Storage Storage { get; set; }
 
         public virtual List<Label> Labels { get; set; }
+        public virtual List<Item> Items { get; set; }
 
 
     }
