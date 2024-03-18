@@ -59,6 +59,7 @@ namespace BackendWebAPI.Services
             var provider = _documentDbContext
                 .Providers
                 .Include(d => d.Documents)
+                .Include(a => a.Address)
                 .FirstOrDefault(s => s.Id == id);
 
             if (provider is null)
@@ -67,6 +68,7 @@ namespace BackendWebAPI.Services
             }
 
             _documentDbContext.Providers.Remove(provider);
+            _documentDbContext.Addresses.Remove(provider.Address);
             _documentDbContext.SaveChanges();
 
             return true;

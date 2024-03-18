@@ -62,12 +62,26 @@ namespace BackendWebAPI.Services
                 }
             }
 
-            var storage = _documentDbContext.Storages.FirstOrDefault(s => s.Name.ToLower().Equals(dto.TargetWarehouse.ToLower()));
+            Entities.Storage storage;
+            string nameAndSymbol = "";
+
+            if (dto.TargetWarehouse.Contains(";"))
+            {
+                string[] strings = dto.TargetWarehouse.Split(";");
+                storage = _documentDbContext.Storages.FirstOrDefault(s => s.Name.ToLower().Equals(strings[0].ToLower()));
+                nameAndSymbol = strings[0];
+            }
+            else
+            {
+                storage = _documentDbContext.Storages.FirstOrDefault(s => s.Name.ToLower().Equals(dto.TargetWarehouse.ToLower()));
+            }
+            
             if (storage == null) return -1;
 
 
             var document = _mapper.Map<AdmissionDocument>(dto);
-            document.TargetWarehouse = dto.TargetWarehouse;
+            if (nameAndSymbol.IsNullOrEmpty() ) document.TargetWarehouse = dto.TargetWarehouse;
+            else document.TargetWarehouse = nameAndSymbol;
             document.Vendor = provider.CompanyName;
             document.ProviderId = provider.Id;
             document.StorageId = storage.Id;
@@ -211,11 +225,11 @@ namespace BackendWebAPI.Services
                 document.Vendor = updateProvider.CompanyName;
             }
 
-            if (dto.ApprovedDocument == "APPROVED" || dto.ApprovedDocument == "CANCELLED" || dto.ApprovedDocument == "WAIT")
+            if (dto.ApprovedDocument.ToUpper() == "APPROVED" || dto.ApprovedDocument.ToUpper() == "CANCELLED" || dto.ApprovedDocument.ToUpper() == "WAIT")
             {
-                if (document.ApprovedDocument == "APPROVED") return false; // if the document is APPROVED, it cannot be changed
+                if (document.ApprovedDocument.ToUpper() == "APPROVED") return false; // if the document is APPROVED, it cannot be changed
 
-                document.ApprovedDocument = dto.ApprovedDocument;
+                document.ApprovedDocument = dto.ApprovedDocument.ToUpper();
             }
 
             if (!dto.LabelNames.IsNullOrEmpty())
