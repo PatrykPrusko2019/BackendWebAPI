@@ -20,7 +20,7 @@ namespace BackendWebAPI
             builder.Services.AddScoped<IProviderService, ProviderService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IDocumentService, DocumentService>();
-
+            builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<DocumentDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DocumentsDbContext"), builder =>
             {
@@ -37,6 +37,13 @@ namespace BackendWebAPI
             // Configure the HTTP request pipeline.
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MusicStore API");
+                // c.RoutePrefix = string.Empty;
+            });
 
             app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
