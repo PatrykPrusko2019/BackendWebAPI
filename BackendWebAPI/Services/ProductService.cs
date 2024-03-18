@@ -132,9 +132,9 @@ namespace BackendWebAPI.Services
             }
             else
             {
-                //sprawdzamy czy jest juz taki w liscie Items
+                //check if there is already one in the Items list
                 var checkedItem = document.Items.FirstOrDefault(i => i.NameProduct == dto.Name && i.CodeProduct == dto.Code);
-                if (checkedItem != null) //jesli jest juz na liscie to dodajemy do niego, i odejmujemy od obecnego
+                if (checkedItem != null) //if it is already on the list then add to it, and subtract from the current one
                 {
                     // added to existing item
                     checkedItem.Price += dto.Price;
@@ -148,7 +148,7 @@ namespace BackendWebAPI.Services
                         updatedItem.ItemsOfProducts -= 1;
                     }
                 }
-                else // nie ma to tworzymy nowego, a usuwamy obecnego
+                else // if there is none then create a new one and remove the current one
                 {
                     // create new item to list
                     var newItem = new Item()
