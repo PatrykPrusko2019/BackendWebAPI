@@ -158,9 +158,10 @@ namespace BackendWebAPI.Services
         {
             var document = _documentDbContext
                 .Documents
+                .Include(l => l.Labels)
                 .FirstOrDefault(s => s.Id == id);
 
-            if (document == null || ( dto.TargetWarehouse.Trim().IsNullOrEmpty() && dto.Vendor.Trim().IsNullOrEmpty() && dto.ApprovedDocument.Trim().IsNullOrEmpty()) ) { return false; }
+            if (document == null || ( dto.TargetWarehouse.Trim().IsNullOrEmpty() && dto.Vendor.Trim().IsNullOrEmpty() && dto.LabelNames.Trim().IsNullOrEmpty()) ) { return false; }
             
             bool differentStorage = !document.TargetWarehouse.ToLower().Equals(dto.TargetWarehouse.ToLower());
             var updateStorage = default(Entities.Storage);
@@ -192,7 +193,7 @@ namespace BackendWebAPI.Services
 
             }
 
-            if (updateStorage == null && updateProvider == null && dto.ApprovedDocument.IsNullOrEmpty()) return false;
+            if (updateStorage == null && updateProvider == null && dto.ApprovedDocument.IsNullOrEmpty() && dto.LabelNames.IsNullOrEmpty()) return false;
 
             if (updateStorage != null)
             {
@@ -211,6 +212,17 @@ namespace BackendWebAPI.Services
                 if (document.ApprovedDocument == "APPROVED") return false; // if the document is APPROVED, it cannot be changed
 
                 document.ApprovedDocument = dto.ApprovedDocument;
+            }
+
+            if (!dto.LabelNames.IsNullOrEmpty())
+            {
+                var newLabel = dto.LabelNames;
+                var result = document.Labels.FirstOrDefault(l => l.Name.ToLower().Equals(newLabel.Trim().ToLower()));
+
+                if (result != null) { document.Labels.Remove(result); _documentDbContext.Labels.Remove(result); }
+                else document.Labels.Add(new Label() { Name = newLabel.Trim() });
+               
+
             }
 
             if (updateStorage != null) updateStorage.Documents.Add(document);
